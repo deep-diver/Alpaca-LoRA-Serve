@@ -116,19 +116,35 @@ async def build_prompt_and_reply(executor, user_name, user_id):
                             break
 
             prompt = await build_prompt(ppm, win_size=user_args["max-windows"])
+            prompt = async build_prompt(ppm, win_size=user_args["max_windows"])
+            
             if tgi_server_addr is None:
                 response = await loop.run_in_executor(executor, gen_method, prompt, user_args)
                 response = post.clean(response)
             else:
                 response = await gen_method(prompt, user_args)
+                
+            threads = []
+            import threading
+            def handle_request(request):]
+				response = f"**{model_name}** 💬\n{response.strip()}"
+            	if len(response) >= max_response_length:
+                	response = response[:max_response_length]
+            	if other_job_on_progress is True:
+                	await progress_msg.delete()
+				 await msg.reply(response, mention_author=False)
+		        except IndexError:
+		            await msg.channel.send("Index error")
+		        except HTTPException:
+		            pass
+            	pass
+            for request in requests:
+                t = threading.Thread(target=handle_request, args=(request,))
+                t.start()
+    			threads.append(t)
 
-            response = f"**{model_name}** 💬\n{response.strip()}"
-            if len(response) >= max_response_length:
-                response = response[:max_response_length]
-
-            if other_job_on_progress is True:
-                await progress_msg.delete()
-
+			for t in threads:
+			    t.join()
             await msg.reply(response, mention_author=False)
         except IndexError:
             await msg.channel.send("Index error")
